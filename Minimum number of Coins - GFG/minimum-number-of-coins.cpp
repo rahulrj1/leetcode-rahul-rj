@@ -25,15 +25,12 @@ public:
         }
         vector<int> ans;
         int i = N, j = 10;
-        int cnt = dp[N][10];
         while(i != 0) {
             if(dp[i][j] == dp[i][j-1]) j--;
             else {
-                ans.push_back(arr[j-1]);
+                ans.push_back(arr[j-1]); 
                 i -= arr[j-1];
-                cnt--;
             }
-            if(cnt == 0) break;
         }
         return ans;
         // code here
