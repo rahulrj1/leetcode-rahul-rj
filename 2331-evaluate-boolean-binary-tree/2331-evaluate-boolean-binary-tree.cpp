@@ -15,6 +15,6 @@ public:
         return 
         root->val == 2 ? evaluateTree(root->left)|evaluateTree(root->right) :
         root->val == 3 ? evaluateTree(root->left)&evaluateTree(root->right) :
-        root->val == 1;
+        root->val;
     }
 };
