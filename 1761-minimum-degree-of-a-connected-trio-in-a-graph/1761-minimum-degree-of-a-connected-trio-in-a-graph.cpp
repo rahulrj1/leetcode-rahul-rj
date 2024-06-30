@@ -11,8 +11,9 @@ public:
         int res = 1e6;
         for(int i=0; i<n; i++) {
             for(int j=i+1; j<n; j++) {
+                if(!z[i][j]) continue;
                 for(int k=j+1; k<n; k++) {
-                    if(z[i][j] && z[j][k] && z[i][k]) {
+                    if(z[j][k] && z[i][k]) {
                         res = min(res, degree[i] + degree[j] + degree[k] - 6);
                     }
                 } 
