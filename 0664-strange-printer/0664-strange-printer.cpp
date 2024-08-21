@@ -20,7 +20,7 @@ public:
                 
                 for(int split = 0; split < len - 1; split++) {
                     int temp = dp[st][st+split] + dp[st+split+1][end];
-                    if(s[st+split] == s[end]) temp--;
+                    if(s[st] == s[st+split+1]) temp--;
                     dp[st][end] = min(dp[st][end], temp);
                 }
             }
