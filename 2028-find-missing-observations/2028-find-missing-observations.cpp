@@ -9,9 +9,9 @@ public:
         
         int quo = restSum/n;
         int rem = restSum%n;
-        vector<int> res;
-        for(int i=0; i<rem; i++) res.push_back(quo+1);
-        for(int i=0; i<n-rem; i++) res.push_back(quo);
+        vector<int> res(n);
+        for(int i=0; i<rem; i++) res[i] = (quo+1);
+        for(int i=0; i<n-rem; i++) res[i+rem] = (quo);
         return res;
     }
 };
