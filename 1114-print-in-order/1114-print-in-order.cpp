@@ -8,7 +8,7 @@ public:
     }
 
     void first(function<void()> printFirst) {
-        unique_lock<mutex> lock(mtx);
+        unique_lock<mutex> lock(mtx); // lock the mutex
         cv.wait(lock, [this] { return turn == 1; });
         // printFirst() outputs "first". Do not change or remove this line.
         printFirst();
