@@ -1,9 +1,12 @@
 class Node {
 public:
     int cnt;
-    unordered_map<char, Node*> child;
+    Node* child[26];
     Node() {
         cnt = 0;
+        for(int i=0; i<26; i++) {
+            child[i] = nullptr;
+        }
     }
 };
 
@@ -11,8 +14,8 @@ class Solution {
     void insert(string &s, Node* root) {
         Node* curr = root;
         for(char &c: s) {
-            if(curr->child.find(c) == curr->child.end()) curr->child[c] = new Node();
-            curr = curr->child[c];
+            if(curr->child[c-'a'] == nullptr) curr->child[c-'a'] = new Node();
+            curr = curr->child[c-'a'];
             (curr->cnt)++;
         }
     }
@@ -28,7 +31,7 @@ public:
             string word = words[i];
             Node* curr = root;
             for(char &c: word) {
-                curr = curr->child[c];
+                curr = curr->child[c-'a'];
                 res[i] += curr->cnt;
             }
         }
