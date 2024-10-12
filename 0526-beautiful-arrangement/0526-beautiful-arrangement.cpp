@@ -1,29 +1,21 @@
 class Solution {
+    int count = 0;
 public:
-    int ans=0;
-    
-    void helper(vector<int> &nums, int ind){
-        
-        if(ind==nums.size()){
-            ans++;
-            return;
-        }
-        
-        for(int i=ind; i<nums.size(); i++){
-            swap(nums[ind], nums[i]);
-            if(nums[ind]%(ind+1)==0 || (ind+1)%nums[ind]==0) helper(nums, ind+1);
-            swap(nums[ind], nums[i]);
-        }
-        
+    int countArrangement(int N) {
+        vector<bool> visited(N + 1, false);
+        calculate(N, 1, visited);
+        return count;
     }
     
-    int countArrangement(int n) {
-        if(n==1) return 1;
-        vector<int> nums;
-        for(int i=1; i<=n; i++)
-            nums.push_back(i);
-        
-        helper(nums, 0);
-        return ans;
+    void calculate(int N, int pos, vector<bool>& visited) {
+        if (pos > N)
+            count++;
+        for (int i = 1; i <= N; i++) {
+            if (!visited[i] && (pos % i == 0 || i % pos == 0)) {
+                visited[i] = true;
+                calculate(N, pos + 1, visited);
+                visited[i] = false;
+            }
+        }
     }
 };
