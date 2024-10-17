@@ -1,63 +1,61 @@
 class Solution {
+    int findPar(vector<int> &pa, vector<int> &pb, int x) {
+        if(pa[x] == -1) return x;
+        pa[x] = findPar(pa, pb, pa[x]);
+        return pb[x] = pa[x];
+    }
+    int findPar(vector<int> &p, int x) {
+        if(p[x] == -1) return x;
+        return p[x] = findPar(p, p[x]);
+    }
 public:
-    int findParent(int node, vector<int> &parenta, vector<int> &parentb) {
-        if(parenta[node] == node) return node;
-        parenta[node] = findParent(parenta[node], parenta, parentb);
-        return parentb[node] = parenta[node];
-    }
-    
-    int findParent(int node, vector<int> &parent) {
-        if(parent[node] == node) return node;
-        return parent[node] = findParent(parent[node], parent);
-    }
-    
     int maxNumEdgesToRemove(int n, vector<vector<int>>& edges) {
-        vector<int> parenta(n+1);
-        vector<int> parentb(n+1);
-        for(int i=0; i<n; i++) parenta[i] = i, parentb[i] = i;
+        sort(edges.rbegin(), edges.rend()); // all type 3 edges come first
+        vector<int>pa(n, -1);
+        vector<int>ra(n, 1);
+        vector<int>pb(n, -1);
+        vector<int>rb(n, 1);
+        int e1 = 0, e2 = 0, e3 = 0;
         
-        int res = 0;
-        for(vector<int> edge: edges) {
-            if(edge[0] == 3) {
-                int pa = findParent(edge[1], parenta, parentb);
-                int pb = findParent(edge[2], parenta, parentb);
+        for(vector<int> &e: edges) {
+            if(e[0] == 3) {
+                int p1 = findPar(pa, pb, e[1]-1);
+                int p2 = findPar(pa, pb, e[2]-1);
                 
-                if(pa != pb) {
-                    parenta[pa] = pb;
-                    parentb[pa] = pb;
-                    res++;
+                if(p1 != p2) {
+                    e3++;
+                    if(ra[p1] >= ra[p2]) {
+                        pa[p2] = p1, pb[p2] = p1;
+                        ra[p1] += ra[p2], rb[p1] += rb[p2];
+                    }
+                    else{
+                        pa[p1] = p2, pb[p1] = p2;
+                        ra[p2] += ra[p1], rb[p2] += rb[p1];
+                    }
+                }
+            }
+            else if(e[0] == 1) {
+                int p1 = findPar(pa, e[1]-1);
+                int p2 = findPar(pa, e[2]-1);
+                
+                if(p1 != p2) {
+                    e1++;
+                    if(ra[p1] >= ra[p2]) pa[p2] = p1, ra[p1] += ra[p2];
+                    else pa[p1] = p2, ra[p2] += ra[p1];
+                }
+            }
+            else {
+                int p1 = findPar(pb, e[1]-1);
+                int p2 = findPar(pb, e[2]-1);
+                
+                if(p1 != p2) {
+                    e2++;
+                    if(rb[p1] >= rb[p2]) pb[p2] = p1, rb[p1] += rb[p2];
+                    else pb[p1] = p2, rb[p2] += rb[p1];
                 }
             }
         }
-        
-        for(vector<int> edge: edges) {
-            if(edge[0] == 1) {
-                int pa = findParent(edge[1], parenta);
-                int pb = findParent(edge[2], parenta);
-                
-                if(pa != pb) {
-                    parenta[pa] = pb;
-                    res++;
-                }
-            }
-            else if(edge[0] == 2) {
-                int pa = findParent(edge[1], parentb);
-                int pb = findParent(edge[2], parentb);
-                
-                if(pa != pb) {
-                    parentb[pa] = pb;
-                    res++;
-                }
-            }
-        }
-        res = edges.size() - res;
-        int roota = findParent(1, parenta), rootb = findParent(1, parentb);
-        for(int i=2; i<=n; i++) {
-            int pa = findParent(i, parenta);
-            if(pa != roota) {res = -1; break;}
-            int pb = findParent(i, parentb);
-            if(pb != rootb) {res = -1; break;}
-        }
-        return res;
+        if((e3+e1 != n-1) || (e3+e2 != n-1)) return -1;
+        return edges.size() - (e1+e2+e3);
     }
 };
